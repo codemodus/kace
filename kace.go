@@ -57,17 +57,17 @@ func init() {
 }
 
 // Camel returns a camel cased string.
-func Camel(rs string, ucFirst bool) string {
+func Camel(s string, ucFirst bool) string {
 	tmpBuf := make([]rune, 0, ciMaxLen)
-	buf := make([]rune, 0, len(rs))
+	buf := make([]rune, 0, len(s))
 
-	for i := 0; i < len(rs); i++ {
+	for i := 0; i < len(s); i++ {
 		tmpBuf = tmpBuf[:0]
-		if unicode.IsLetter(rune(rs[i])) {
-			if i == 0 || !unicode.IsLetter(rune(rs[i-1])) {
-				for n := i; n < len(rs) && n-i < ciMaxLen; n++ {
-					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(rs[n])))
-					if n < len(rs)-1 && !unicode.IsLetter(rune(rs[n+1])) && !unicode.IsDigit(rune(rs[n+1])) {
+		if unicode.IsLetter(rune(s[i])) {
+			if i == 0 || !unicode.IsLetter(rune(s[i-1])) {
+				for n := i; n < len(s) && n-i < ciMaxLen; n++ {
+					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(s[n])))
+					if n < len(s)-1 && !unicode.IsLetter(rune(s[n+1])) && !unicode.IsDigit(rune(s[n+1])) {
 						break
 					}
 				}
@@ -78,40 +78,40 @@ func Camel(rs string, ucFirst bool) string {
 				}
 			}
 
-			if i == 0 && ucFirst || i > 0 && !unicode.IsLetter(rune(rs[i-1])) {
-				buf = append(buf, unicode.ToUpper(rune(rs[i])))
+			if i == 0 && ucFirst || i > 0 && !unicode.IsLetter(rune(s[i-1])) {
+				buf = append(buf, unicode.ToUpper(rune(s[i])))
 			} else {
-				buf = append(buf, rune(rs[i]))
+				buf = append(buf, rune(s[i]))
 			}
 		}
 
-		if unicode.IsDigit(rune(rs[i])) {
-			buf = append(buf, rune(rs[i]))
+		if unicode.IsDigit(rune(s[i])) {
+			buf = append(buf, rune(s[i]))
 		}
 	}
 	return string(buf)
 }
 
 // Snake returns a snake cased string.
-func Snake(rs string) string {
-	buf := make([]rune, 0, len(rs)*2)
+func Snake(s string) string {
+	buf := make([]rune, 0, len(s)*2)
 
-	for i := len(rs); i > 0; i-- {
-		if unicode.IsLetter(rune(rs[i-1])) {
-			if i < len(rs) && unicode.IsUpper(rune(rs[i])) {
-				if i > 1 && unicode.IsLower(rune(rs[i-1])) || i < len(rs)-2 && unicode.IsLower(rune(rs[i+1])) {
+	for i := len(s); i > 0; i-- {
+		if unicode.IsLetter(rune(s[i-1])) {
+			if i < len(s) && unicode.IsUpper(rune(s[i])) {
+				if i > 1 && unicode.IsLower(rune(s[i-1])) || i < len(s)-2 && unicode.IsLower(rune(s[i+1])) {
 					buf = append(buf, '_')
 				}
 			}
-			buf = append(buf, unicode.ToLower(rune(rs[i-1])))
-		} else if unicode.IsDigit(rune(rs[i-1])) {
-			if i == len(rs) || i == 1 || unicode.IsDigit(rune(rs[i])) {
-				buf = append(buf, rune(rs[i-1]))
+			buf = append(buf, unicode.ToLower(rune(s[i-1])))
+		} else if unicode.IsDigit(rune(s[i-1])) {
+			if i == len(s) || i == 1 || unicode.IsDigit(rune(s[i])) {
+				buf = append(buf, rune(s[i-1]))
 			} else {
-				buf = append(buf, '_', rune(rs[i-1]))
+				buf = append(buf, '_', rune(s[i-1]))
 			}
 		} else {
-			if i == len(rs) {
+			if i == len(s) {
 				continue
 			}
 			buf = append(buf, '_')
