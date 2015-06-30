@@ -57,18 +57,17 @@ func init() {
 }
 
 // Camel returns a camel cased string.
-func Camel(s string, ucFirst bool) string {
-	rs := []rune(s)
+func Camel(rs string, ucFirst bool) string {
+	tmpBuf := make([]rune, 0, ciMaxLen)
 	buf := make([]rune, 0, len(rs))
 
 	for i := 0; i < len(rs); i++ {
-		if unicode.IsLetter(rs[i]) {
-			if i == 0 || !unicode.IsLetter(rs[i-1]) {
-				tmpBuf := make([]rune, 0, ciMaxLen)
+		tmpBuf = tmpBuf[:0]
+		if unicode.IsLetter(rune(rs[i])) {
+			if i == 0 || !unicode.IsLetter(rune(rs[i-1])) {
 				for n := i; n < len(rs) && n-i < ciMaxLen; n++ {
-					tmpBuf = append(tmpBuf, unicode.ToUpper(rs[n]))
-
-					if n < len(rs)-1 && !unicode.IsLetter(rs[n+1]) && !unicode.IsDigit(rs[n+1]) {
+					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(rs[n])))
+					if n < len(rs)-1 && !unicode.IsLetter(rune(rs[n+1])) && !unicode.IsDigit(rune(rs[n+1])) {
 						break
 					}
 				}
@@ -79,15 +78,15 @@ func Camel(s string, ucFirst bool) string {
 				}
 			}
 
-			if i == 0 && ucFirst || i > 0 && !unicode.IsLetter(rs[i-1]) {
-				buf = append(buf, unicode.ToUpper(rs[i]))
+			if i == 0 && ucFirst || i > 0 && !unicode.IsLetter(rune(rs[i-1])) {
+				buf = append(buf, unicode.ToUpper(rune(rs[i])))
 			} else {
-				buf = append(buf, rs[i])
+				buf = append(buf, rune(rs[i]))
 			}
 		}
 
-		if unicode.IsDigit(rs[i]) {
-			buf = append(buf, rs[i])
+		if unicode.IsDigit(rune(rs[i])) {
+			buf = append(buf, rune(rs[i]))
 		}
 	}
 	return string(buf)
