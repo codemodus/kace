@@ -9,6 +9,7 @@ import (
 var (
 	ciMaxLen int
 	// github.com/golang/lint/blob/master/lint.go
+	// TODO: consider using tree for lookup to minimize allocations.
 	ci = map[string]bool{
 		"API":   true,
 		"ASCII": true,
