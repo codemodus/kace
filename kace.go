@@ -94,31 +94,36 @@ func Camel(s string, ucFirst bool) string {
 }
 
 // Snake returns a snake cased string.
-func Snake(s string) string {
-	rs := []rune(s)
-	rsus := []rune{'_'}
+func Snake(rs string) string {
 	buf := make([]rune, 0, len(rs)*2)
 
 	for i := len(rs); i > 0; i-- {
-		if unicode.IsLetter(rs[i-1]) {
-			if i < len(rs) && unicode.IsUpper(rs[i]) {
-				if i > 1 && unicode.IsLower(rs[i-1]) || i < len(rs)-2 && unicode.IsLower(rs[i+1]) {
-					buf = append(rsus, buf...)
+		if unicode.IsLetter(rune(rs[i-1])) {
+			if i < len(rs) && unicode.IsUpper(rune(rs[i])) {
+				if i > 1 && unicode.IsLower(rune(rs[i-1])) || i < len(rs)-2 && unicode.IsLower(rune(rs[i+1])) {
+					buf = append(buf, '_')
 				}
 			}
-			buf = append([]rune{unicode.ToLower(rs[i-1])}, buf...)
-		} else if unicode.IsDigit(rs[i-1]) {
-			if i == len(rs) || i == 1 || unicode.IsDigit(rs[i]) {
-				buf = append([]rune{rs[i-1]}, buf...)
+			buf = append(buf, unicode.ToLower(rune(rs[i-1])))
+		} else if unicode.IsDigit(rune(rs[i-1])) {
+			if i == len(rs) || i == 1 || unicode.IsDigit(rune(rs[i])) {
+				buf = append(buf, rune(rs[i-1]))
 			} else {
-				buf = append([]rune{rs[i-1], '_'}, buf...)
+				buf = append(buf, '_', rune(rs[i-1]))
 			}
 		} else {
 			if i == len(rs) {
 				continue
 			}
-			buf = append(rsus, buf...)
+			buf = append(buf, '_')
 		}
 	}
-	return string(buf)
+	return string(reverse(buf))
+}
+
+func reverse(s []rune) []rune {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }
