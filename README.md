@@ -9,6 +9,7 @@ consideration common initialisms.
 
 ```go
 func Camel(s string, ucFirst bool) string
+func Kebab(s string) string
 func Snake(s string) string
 ```
 
@@ -16,23 +17,26 @@ func Snake(s string) string
 
 ```go
 import (
-	"fmt"
+    "fmt"
 
-	"github.com/codemodus/kace"
+    "github.com/codemodus/kace"
 )
 
 func main() {
-	s := "this is a test."
+    s := "this is a test."
 
-	fmt.Println(kace.Camel(s, false))
-	fmt.Println(kace.Camel(s, true))
+    fmt.Println(kace.Camel(s, false))
+    fmt.Println(kace.Camel(s, true))
 
-	fmt.Println(kace.Snake(s))
+    fmt.Println(kace.Snake(s))
 
-	// Output:
-	// thisIsATest
-	// ThisIsATest
-	// this_is_a_test
+    fmt.Println(kace.Kebab(s))
+
+    // Output:
+    // thisIsATest
+    // ThisIsATest
+    // this_is_a_test
+    // this-is-a-test
 }
 ```
 

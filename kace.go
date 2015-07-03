@@ -95,13 +95,23 @@ func Camel(s string, ucFirst bool) string {
 
 // Snake returns a snake cased string.
 func Snake(s string) string {
+	return delimitedCase(s, '_')
+}
+
+// Kebab returns a kebab cased string.
+func Kebab(s string) string {
+	return delimitedCase(s, '-')
+}
+
+// Snake returns a snake cased string.
+func delimitedCase(s string, delim rune) string {
 	buf := make([]rune, 0, len(s)*2)
 
 	for i := len(s); i > 0; i-- {
 		if unicode.IsLetter(rune(s[i-1])) {
 			if i < len(s) && unicode.IsUpper(rune(s[i])) {
 				if i > 1 && unicode.IsLower(rune(s[i-1])) || i < len(s)-2 && unicode.IsLower(rune(s[i+1])) {
-					buf = append(buf, '_')
+					buf = append(buf, delim)
 				}
 			}
 			buf = append(buf, unicode.ToLower(rune(s[i-1])))
@@ -109,13 +119,13 @@ func Snake(s string) string {
 			if i == len(s) || i == 1 || unicode.IsDigit(rune(s[i])) {
 				buf = append(buf, rune(s[i-1]))
 			} else {
-				buf = append(buf, '_', rune(s[i-1]))
+				buf = append(buf, delim, rune(s[i-1]))
 			}
 		} else {
 			if i == len(s) {
 				continue
 			}
-			buf = append(buf, '_')
+			buf = append(buf, delim)
 		}
 	}
 	return string(reverse(buf))

@@ -15,10 +15,13 @@ func Example() {
 
 	fmt.Println(kace.Snake(s))
 
+	fmt.Println(kace.Kebab(s))
+
 	// Output:
 	// thisIsATest
 	// ThisIsATest
 	// this_is_a_test
+	// this-is-a-test
 }
 
 func TestCamel(t *testing.T) {
@@ -94,6 +97,35 @@ func TestSnake(t *testing.T) {
 	}
 }
 
+func TestKebab(t *testing.T) {
+	var tests = []struct {
+		i string
+		o string
+	}{
+		{"thisIsATest", "this-is-a-test"},
+		{"ThisIsATest", "this-is-a-test"},
+		{"ThisIsATest3", "this-is-a-test3"},
+		{"ThisIs44Test", "this-is44-test"},
+		{"5ThisIsATest", "5this-is-a-test"},
+		{"this is a test", "this-is-a-test"},
+		{"this_is_a_test", "this-is-a-test"},
+		{"This is a test.", "this-is-a-test"},
+		{"This.is.a.Test", "this-is-a-test"},
+		{"thisHTTPSConn", "this-https-conn"},
+		{"ThisHTTPSConn", "this-https-conn"},
+		{"willidMessItUp", "willid-mess-it-up"},
+		{"WillidMessItUp", "willid-mess-it-up"},
+	}
+
+	for _, v := range tests {
+		want := v.o
+		got := kace.Kebab(v.i)
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+}
+
 func BenchmarkCamel4(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		_ = kace.Camel("this_is_a_test", true)
@@ -103,5 +135,11 @@ func BenchmarkCamel4(b *testing.B) {
 func BenchmarkSnake4(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		_ = kace.Snake("ThisIsATest")
+	}
+}
+
+func BenchmarkKebab4(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_ = kace.Kebab("ThisIsATest")
 	}
 }
