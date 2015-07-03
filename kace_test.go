@@ -14,14 +14,18 @@ func Example() {
 	fmt.Println(kace.Camel(s, true))
 
 	fmt.Println(kace.Snake(s))
+	fmt.Println(kace.SnakeUpper(s))
 
 	fmt.Println(kace.Kebab(s))
+	fmt.Println(kace.KebabUpper(s))
 
 	// Output:
 	// thisIsATest
 	// ThisIsATest
 	// this_is_a_test
+	// THIS_IS_A_TEST
 	// this-is-a-test
+	// THIS-IS-A-TEST
 }
 
 func TestCamel(t *testing.T) {
@@ -97,6 +101,35 @@ func TestSnake(t *testing.T) {
 	}
 }
 
+func TestSnakeUpper(t *testing.T) {
+	var tests = []struct {
+		i string
+		o string
+	}{
+		{"thisIsATest", "THIS_IS_A_TEST"},
+		{"ThisIsATest", "THIS_IS_A_TEST"},
+		{"ThisIsATest3", "THIS_IS_A_TEST3"},
+		{"ThisIs44Test", "THIS_IS44_TEST"},
+		{"5ThisIsATest", "5THIS_IS_A_TEST"},
+		{"this is a test", "THIS_IS_A_TEST"},
+		{"this_is_a_test", "THIS_IS_A_TEST"},
+		{"This is a test.", "THIS_IS_A_TEST"},
+		{"This.is.a.Test", "THIS_IS_A_TEST"},
+		{"thisHTTPSConn", "THIS_HTTPS_CONN"},
+		{"ThisHTTPSConn", "THIS_HTTPS_CONN"},
+		{"willidMessItUp", "WILLID_MESS_IT_UP"},
+		{"WillidMessItUp", "WILLID_MESS_IT_UP"},
+	}
+
+	for _, v := range tests {
+		want := v.o
+		got := kace.SnakeUpper(v.i)
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+}
+
 func TestKebab(t *testing.T) {
 	var tests = []struct {
 		i string
@@ -126,6 +159,35 @@ func TestKebab(t *testing.T) {
 	}
 }
 
+func TestKebabUpper(t *testing.T) {
+	var tests = []struct {
+		i string
+		o string
+	}{
+		{"thisIsATest", "THIS-IS-A-TEST"},
+		{"ThisIsATest", "THIS-IS-A-TEST"},
+		{"ThisIsATest3", "THIS-IS-A-TEST3"},
+		{"ThisIs44Test", "THIS-IS44-TEST"},
+		{"5ThisIsATest", "5THIS-IS-A-TEST"},
+		{"this is a test", "THIS-IS-A-TEST"},
+		{"this_is_a_test", "THIS-IS-A-TEST"},
+		{"This is a test.", "THIS-IS-A-TEST"},
+		{"This.is.a.Test", "THIS-IS-A-TEST"},
+		{"thisHTTPSConn", "THIS-HTTPS-CONN"},
+		{"ThisHTTPSConn", "THIS-HTTPS-CONN"},
+		{"willidMessItUp", "WILLID-MESS-IT-UP"},
+		{"WillidMessItUp", "WILLID-MESS-IT-UP"},
+	}
+
+	for _, v := range tests {
+		want := v.o
+		got := kace.KebabUpper(v.i)
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+}
+
 func BenchmarkCamel4(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		_ = kace.Camel("this_is_a_test", true)
@@ -138,8 +200,20 @@ func BenchmarkSnake4(b *testing.B) {
 	}
 }
 
+func BenchmarkSnakeUpper4(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_ = kace.SnakeUpper("ThisIsATest")
+	}
+}
+
 func BenchmarkKebab4(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		_ = kace.Kebab("ThisIsATest")
+	}
+}
+
+func BenchmarkKebabUpper4(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		_ = kace.KebabUpper("ThisIsATest")
 	}
 }
