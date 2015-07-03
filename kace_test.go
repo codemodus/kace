@@ -52,6 +52,8 @@ func TestCamel(t *testing.T) {
 		{"willid_mess_it_up", true, "WillidMessItUp"},
 		{"http_first_lower", false, "httpFirstLower"},
 		{"http_first_upper", true, "HTTPFirstUpper"},
+		{"ahttp_lower", false, "ahttpLower"},
+		{"ahttp_upper", true, "AhttpUpper"},
 	}
 
 	for _, v := range tests {

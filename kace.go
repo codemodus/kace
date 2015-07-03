@@ -72,7 +72,7 @@ func Camel(s string, ucFirst bool) string {
 						break
 					}
 				}
-				if ci[string(tmpBuf)] {
+				if ((i == 0 && ucFirst) || i > 0) && ci[string(tmpBuf)] {
 					buf = append(buf, tmpBuf...)
 					i += len(tmpBuf)
 					continue
