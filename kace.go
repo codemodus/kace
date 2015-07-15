@@ -9,7 +9,6 @@ import (
 var (
 	ciMaxLen int
 	// github.com/golang/lint/blob/master/lint.go
-	// TODO: consider using tree for lookup to minimize allocations.
 	ci = map[string]bool{
 		"API":   true,
 		"ASCII": true,
@@ -47,6 +46,7 @@ var (
 		"XSRF":  true,
 		"XSS":   true,
 	}
+	ciTrie *trie
 )
 
 func init() {
@@ -54,6 +54,11 @@ func init() {
 		if len(k) > ciMaxLen {
 			ciMaxLen = len(k)
 		}
+	}
+
+	ciTrie = newTrie()
+	for k := range ci {
+		ciTrie.add([]rune(k))
 	}
 }
 
@@ -72,7 +77,7 @@ func Camel(s string, ucFirst bool) string {
 						break
 					}
 				}
-				if ((i == 0 && ucFirst) || i > 0) && ci[string(tmpBuf)] {
+				if ((i == 0 && ucFirst) || i > 0) && ciTrie.find(tmpBuf) {
 					buf = append(buf, tmpBuf...)
 					i += len(tmpBuf)
 					continue

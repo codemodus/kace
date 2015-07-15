@@ -50,11 +50,9 @@ func main() {
 
 ### TODO
 
-#### Reduce allocations in camel func.
+#### Test Trie
 
-I'd like to make use of a tree of some sort to look up initialisms so that 
-allocations can be avoided.  This will need to be created from the intialisms 
-map during init and be tested against using an unexported function.
+ Test the current trie.
 
 ## Documentation
 
@@ -64,7 +62,7 @@ View the [GoDoc](http://godoc.org/github.com/codemodus/kace)
 
     benchmark                 iter       time/iter   bytes alloc        allocs
     ---------                 ----       ---------   -----------        ------
-    BenchmarkCamel4        1000000   1285.00 ns/op      144 B/op   7 allocs/op
+    BenchmarkCamel4        2000000    947.00 ns/op      112 B/op   3 allocs/op
     BenchmarkSnake4        2000000    696.00 ns/op      128 B/op   2 allocs/op
     BenchmarkSnakeUpper4   2000000    679.00 ns/op      128 B/op   2 allocs/op
     BenchmarkKebab4        2000000    691.00 ns/op      128 B/op   2 allocs/op
