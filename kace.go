@@ -30,6 +30,7 @@ var (
 		"RPC":   true,
 		"SLA":   true,
 		"SMTP":  true,
+		"SQL":   true,
 		"SSH":   true,
 		"TCP":   true,
 		"TLS":   true,
