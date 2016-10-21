@@ -1,16 +1,16 @@
 package kace
 
-type link struct {
+type node struct {
 	val  rune
 	link *trie
 }
 
 type trie struct {
-	nodes []link
+	nodes []*node
 }
 
 func newTrie() *trie {
-	return &trie{nodes: make([]link, 0)}
+	return &trie{nodes: make([]*node, 0)}
 }
 
 func (t *trie) add(rs []rune) {
@@ -18,9 +18,8 @@ func (t *trie) add(rs []rune) {
 	for _, v := range rs {
 		ti, ok := searchLink(i.nodes, v)
 		if !ok {
-			ti = new(trie)
-			ti.nodes = make([]link, 0)
-			i.nodes = append(i.nodes, link{val: v, link: ti})
+			ti = newTrie()
+			i.nodes = append(i.nodes, &node{val: v, link: ti})
 		}
 		i = ti
 	}
@@ -38,7 +37,7 @@ func (t *trie) find(rs []rune) bool {
 	return true
 }
 
-func searchLink(ls []link, val rune) (*trie, bool) {
+func searchLink(ls []*node, val rune) (*trie, bool) {
 	for _, v := range ls {
 		if v.val == val {
 			return v.link, true
