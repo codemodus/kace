@@ -10,6 +10,7 @@ var (
 	ciMaxLen int
 	// github.com/golang/lint/blob/master/lint.go
 	ci = map[string]bool{
+		"ACL":   true,
 		"API":   true,
 		"ASCII": true,
 		"CPU":   true,
@@ -44,6 +45,7 @@ var (
 		"UTF8":  true,
 		"VM":    true,
 		"XML":   true,
+		"XMPP":  true,
 		"XSRF":  true,
 		"XSS":   true,
 	}
