@@ -6,65 +6,6 @@ import (
 	"unicode"
 )
 
-var (
-	ciMaxLen int
-	// github.com/golang/lint/blob/master/lint.go
-	ci = map[string]bool{
-		"ACL":   true,
-		"API":   true,
-		"ASCII": true,
-		"CPU":   true,
-		"CSS":   true,
-		"DNS":   true,
-		"EOF":   true,
-		"GUID":  true,
-		"HTML":  true,
-		"HTTP":  true,
-		"HTTPS": true,
-		"ID":    true,
-		"IP":    true,
-		"JSON":  true,
-		"LHS":   true,
-		"QPS":   true,
-		"RAM":   true,
-		"RHS":   true,
-		"RPC":   true,
-		"SLA":   true,
-		"SMTP":  true,
-		"SQL":   true,
-		"SSH":   true,
-		"TCP":   true,
-		"TLS":   true,
-		"TTL":   true,
-		"UDP":   true,
-		"UI":    true,
-		"UID":   true,
-		"UUID":  true,
-		"URI":   true,
-		"URL":   true,
-		"UTF8":  true,
-		"VM":    true,
-		"XML":   true,
-		"XMPP":  true,
-		"XSRF":  true,
-		"XSS":   true,
-	}
-	ciTrie *node
-)
-
-func init() {
-	for k := range ci {
-		if len(k) > ciMaxLen {
-			ciMaxLen = len(k)
-		}
-	}
-
-	ciTrie = newNode()
-	for k := range ci {
-		ciTrie.add([]rune(k))
-	}
-}
-
 // Camel returns a camel cased string.
 func Camel(s string, ucFirst bool) string {
 	tmpBuf := make([]rune, 0, ciMaxLen)
@@ -147,9 +88,11 @@ func delimitedCase(s string, delim rune, upper bool) string {
 			if i == len(s) {
 				continue
 			}
+
 			buf = append(buf, delim)
 		}
 	}
+
 	return string(reverse(buf))
 }
 
@@ -157,5 +100,73 @@ func reverse(s []rune) []rune {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
+
 	return s
 }
+
+func commonInitialismsMaxLen() int {
+	l := 0
+	for k := range ci {
+		if len(k) > l {
+			l = len(k)
+		}
+	}
+
+	return l
+}
+
+func commonInitialismsTrie() *node {
+	t := newNode()
+	for k := range ci {
+		t.add([]rune(k))
+	}
+
+	return t
+}
+
+var (
+	// github.com/golang/lint/blob/master/lint.go
+	ci = map[string]bool{
+		"ACL":   true,
+		"API":   true,
+		"ASCII": true,
+		"CPU":   true,
+		"CSS":   true,
+		"DNS":   true,
+		"EOF":   true,
+		"GUID":  true,
+		"HTML":  true,
+		"HTTP":  true,
+		"HTTPS": true,
+		"ID":    true,
+		"IP":    true,
+		"JSON":  true,
+		"LHS":   true,
+		"QPS":   true,
+		"RAM":   true,
+		"RHS":   true,
+		"RPC":   true,
+		"SLA":   true,
+		"SMTP":  true,
+		"SQL":   true,
+		"SSH":   true,
+		"TCP":   true,
+		"TLS":   true,
+		"TTL":   true,
+		"UDP":   true,
+		"UI":    true,
+		"UID":   true,
+		"UUID":  true,
+		"URI":   true,
+		"URL":   true,
+		"UTF8":  true,
+		"VM":    true,
+		"XML":   true,
+		"XMPP":  true,
+		"XSRF":  true,
+		"XSS":   true,
+	}
+
+	ciMaxLen = commonInitialismsMaxLen()
+	ciTrie   = commonInitialismsTrie()
+)
