@@ -49,7 +49,7 @@ var (
 		"XSRF":  true,
 		"XSS":   true,
 	}
-	ciTrie *trie
+	ciTrie *node
 )
 
 func init() {
@@ -59,7 +59,7 @@ func init() {
 		}
 	}
 
-	ciTrie = newTrie()
+	ciTrie = newNode()
 	for k := range ci {
 		ciTrie.add([]rune(k))
 	}

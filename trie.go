@@ -1,47 +1,45 @@
 package kace
 
 type node struct {
-	val  rune
-	link *trie
+	val   rune
+	end   bool
+	links []*node
 }
 
-type trie struct {
-	nodes []*node
+func newNode() *node {
+	return &node{links: make([]*node, 0)}
 }
 
-func newTrie() *trie {
-	return &trie{nodes: make([]*node, 0)}
-}
-
-func (t *trie) add(rs []rune) {
-	i := t
+func (n *node) add(rs []rune) {
+	cur := n
 	for _, v := range rs {
-		ti, ok := searchLink(i.nodes, v)
-		if !ok {
-			ti = newTrie()
-			i.nodes = append(i.nodes, &node{val: v, link: ti})
+		link := cur.linkByVal(v)
+		if link == nil {
+			link = newNode()
+			cur.links = append(cur.links, link)
 		}
-		i = ti
+		cur = link
 	}
 }
 
-func (t *trie) find(rs []rune) bool {
-	i := t
+func (n *node) find(rs []rune) bool {
+	cur := n
 	for _, v := range rs {
-		ti, ok := searchLink(i.nodes, v)
-		if !ok {
+		cur = cur.linkByVal(v)
+		if cur == nil {
 			return false
 		}
-		i = ti
 	}
-	return true
+
+	return cur.end
 }
 
-func searchLink(ls []*node, val rune) (*trie, bool) {
-	for _, v := range ls {
+func (n *node) linkByVal(val rune) *node {
+	for _, v := range n.links {
 		if v.val == val {
-			return v.link, true
+			return v
 		}
 	}
-	return nil, false
+
+	return nil
 }
