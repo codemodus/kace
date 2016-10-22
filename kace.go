@@ -116,7 +116,7 @@ func commonInitialismsMaxLen() int {
 }
 
 func commonInitialismsTrie() *node {
-	t := newNode()
+	t := newNode(0, false)
 	for k := range ci {
 		t.add([]rune(k))
 	}
