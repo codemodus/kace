@@ -6,6 +6,15 @@ import (
 	"unicode"
 )
 
+const (
+	kebabDelim = '-'
+	snakeDelim = '_'
+)
+
+var (
+	ciTrie = newTrie(ciMap)
+)
+
 // Camel returns a camel cased string.
 func Camel(s string, ucFirst bool) string {
 	tmpBuf := make([]rune, 0, ciTrie.maxDepth)
@@ -44,22 +53,22 @@ func Camel(s string, ucFirst bool) string {
 
 // Snake returns a snake cased string.
 func Snake(s string) string {
-	return delimitedCase(s, '_', false)
+	return delimitedCase(s, snakeDelim, false)
 }
 
 // SnakeUpper returns a snake cased string with all upper case letters.
 func SnakeUpper(s string) string {
-	return delimitedCase(s, '_', true)
+	return delimitedCase(s, snakeDelim, true)
 }
 
 // Kebab returns a kebab cased string.
 func Kebab(s string) string {
-	return delimitedCase(s, '-', false)
+	return delimitedCase(s, kebabDelim, false)
 }
 
 // KebabUpper returns a kebab cased string with all upper case letters.
 func KebabUpper(s string) string {
-	return delimitedCase(s, '-', true)
+	return delimitedCase(s, kebabDelim, true)
 }
 
 // Snake returns a snake cased string.
@@ -67,24 +76,25 @@ func delimitedCase(s string, delim rune, upper bool) string {
 	buf := make([]rune, 0, len(s)*2)
 
 	for i := len(s); i > 0; i-- {
-		if unicode.IsLetter(rune(s[i-1])) {
+		switch {
+		case unicode.IsLetter(rune(s[i-1])):
 			if i < len(s) && unicode.IsUpper(rune(s[i])) {
 				if i > 1 && unicode.IsLower(rune(s[i-1])) || i < len(s)-2 && unicode.IsLower(rune(s[i+1])) {
 					buf = append(buf, delim)
 				}
 			}
-			if upper {
-				buf = append(buf, unicode.ToUpper(rune(s[i-1])))
-			} else {
-				buf = append(buf, unicode.ToLower(rune(s[i-1])))
-			}
-		} else if unicode.IsDigit(rune(s[i-1])) {
+
+			buf = appendCased(buf, upper, rune(s[i-1]))
+
+		case unicode.IsDigit(rune(s[i-1])):
 			if i == len(s) || i == 1 || unicode.IsDigit(rune(s[i])) {
 				buf = append(buf, rune(s[i-1]))
-			} else {
-				buf = append(buf, delim, rune(s[i-1]))
+				continue
 			}
-		} else {
+
+			buf = append(buf, delim, rune(s[i-1]))
+
+		default:
 			if i == len(s) {
 				continue
 			}
@@ -93,20 +103,31 @@ func delimitedCase(s string, delim rune, upper bool) string {
 		}
 	}
 
-	return string(reverse(buf))
+	reverse(buf)
+
+	return string(buf)
 }
 
-func reverse(s []rune) []rune {
+func appendCased(rs []rune, upper bool, r rune) []rune {
+	if upper {
+		rs = append(rs, unicode.ToUpper(r))
+		return rs
+	}
+
+	rs = append(rs, unicode.ToLower(r))
+
+	return rs
+}
+
+func reverse(s []rune) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
-
-	return s
 }
 
 var (
 	// github.com/golang/lint/blob/master/lint.go
-	ci = map[string]bool{
+	ciMap = map[string]bool{
 		"ACL":   true,
 		"API":   true,
 		"ASCII": true,
@@ -146,6 +167,4 @@ var (
 		"XSRF":  true,
 		"XSS":   true,
 	}
-
-	ciTrie = newTrie(ci)
 )
