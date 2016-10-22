@@ -6,10 +6,9 @@ type node struct {
 	links []*node
 }
 
-func newNode(val rune, isEnd bool) *node {
+func newNode(val rune) *node {
 	return &node{
 		val:   val,
-		end:   isEnd,
 		links: make([]*node, 0),
 	}
 }
@@ -17,12 +16,15 @@ func newNode(val rune, isEnd bool) *node {
 func (n *node) add(rs []rune) {
 	cur := n
 	for k, v := range rs {
-		isEnd := k == len(rs)-1
 
 		link := cur.linkByVal(v)
 		if link == nil {
-			link = newNode(v, isEnd)
+			link = newNode(v)
 			cur.links = append(cur.links, link)
+		}
+
+		if k == len(rs)-1 {
+			link.end = true
 		}
 
 		cur = link
@@ -49,4 +51,23 @@ func (n *node) linkByVal(val rune) *node {
 	}
 
 	return nil
+}
+
+type trie struct {
+	maxDepth int
+	*node
+}
+
+func newTrie(data map[string]bool) *trie {
+	maxDepth := 0
+	n := newNode(0)
+	for k := range data {
+		n.add([]rune(k))
+
+		if len(k) > maxDepth {
+			maxDepth = len(k)
+		}
+	}
+
+	return &trie{maxDepth: maxDepth, node: n}
 }

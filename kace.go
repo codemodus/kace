@@ -8,14 +8,14 @@ import (
 
 // Camel returns a camel cased string.
 func Camel(s string, ucFirst bool) string {
-	tmpBuf := make([]rune, 0, ciMaxLen)
+	tmpBuf := make([]rune, 0, ciTrie.maxDepth)
 	buf := make([]rune, 0, len(s))
 
 	for i := 0; i < len(s); i++ {
 		tmpBuf = tmpBuf[:0]
 		if unicode.IsLetter(rune(s[i])) {
 			if i == 0 || !unicode.IsLetter(rune(s[i-1])) {
-				for n := i; n < len(s) && n-i < ciMaxLen; n++ {
+				for n := i; n < len(s) && n-i < ciTrie.maxDepth; n++ {
 					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(s[n])))
 					if n < len(s)-1 && !unicode.IsLetter(rune(s[n+1])) && !unicode.IsDigit(rune(s[n+1])) {
 						break
@@ -104,26 +104,6 @@ func reverse(s []rune) []rune {
 	return s
 }
 
-func commonInitialismsMaxLen() int {
-	l := 0
-	for k := range ci {
-		if len(k) > l {
-			l = len(k)
-		}
-	}
-
-	return l
-}
-
-func commonInitialismsTrie() *node {
-	t := newNode(0, false)
-	for k := range ci {
-		t.add([]rune(k))
-	}
-
-	return t
-}
-
 var (
 	// github.com/golang/lint/blob/master/lint.go
 	ci = map[string]bool{
@@ -167,6 +147,5 @@ var (
 		"XSS":   true,
 	}
 
-	ciMaxLen = commonInitialismsMaxLen()
-	ciTrie   = commonInitialismsTrie()
+	ciTrie = newTrie(ci)
 )
