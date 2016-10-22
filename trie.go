@@ -6,18 +6,25 @@ type node struct {
 	links []*node
 }
 
-func newNode() *node {
-	return &node{links: make([]*node, 0)}
+func newNode(val rune, isEnd bool) *node {
+	return &node{
+		val:   val,
+		end:   isEnd,
+		links: make([]*node, 0),
+	}
 }
 
 func (n *node) add(rs []rune) {
 	cur := n
-	for _, v := range rs {
+	for k, v := range rs {
+		isEnd := k == len(rs)-1
+
 		link := cur.linkByVal(v)
 		if link == nil {
-			link = newNode()
+			link = newNode(v, isEnd)
 			cur.links = append(cur.links, link)
 		}
+
 		cur = link
 	}
 }
