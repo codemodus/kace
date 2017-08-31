@@ -1,34 +1,10 @@
-package kace_test
+package kace
 
 import (
-	"fmt"
 	"testing"
-
-	"github.com/codemodus/kace"
 )
 
-func Example() {
-	s := "this is a test."
-
-	fmt.Println(kace.Camel(s, false))
-	fmt.Println(kace.Camel(s, true))
-
-	fmt.Println(kace.Snake(s))
-	fmt.Println(kace.SnakeUpper(s))
-
-	fmt.Println(kace.Kebab(s))
-	fmt.Println(kace.KebabUpper(s))
-
-	// Output:
-	// thisIsATest
-	// ThisIsATest
-	// this_is_a_test
-	// THIS_IS_A_TEST
-	// this-is-a-test
-	// THIS-IS-A-TEST
-}
-
-func TestCamel(t *testing.T) {
+func TestUnitCamel(t *testing.T) {
 	var tests = []struct {
 		i   string
 		ucf bool
@@ -67,14 +43,14 @@ func TestCamel(t *testing.T) {
 
 	for _, v := range tests {
 		want := v.o
-		got := kace.Camel(v.i, v.ucf)
+		got := Camel(v.i, v.ucf)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
 }
 
-func TestSnake(t *testing.T) {
+func TestUnitSnake(t *testing.T) {
 	var tests = []struct {
 		i string
 		o string
@@ -98,14 +74,14 @@ func TestSnake(t *testing.T) {
 
 	for _, v := range tests {
 		want := v.o
-		got := kace.Snake(v.i)
+		got := Snake(v.i)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
 }
 
-func TestSnakeUpper(t *testing.T) {
+func TestUnitSnakeUpper(t *testing.T) {
 	var tests = []struct {
 		i string
 		o string
@@ -127,14 +103,14 @@ func TestSnakeUpper(t *testing.T) {
 
 	for _, v := range tests {
 		want := v.o
-		got := kace.SnakeUpper(v.i)
+		got := SnakeUpper(v.i)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
 }
 
-func TestKebab(t *testing.T) {
+func TestUnitKebab(t *testing.T) {
 	var tests = []struct {
 		i string
 		o string
@@ -156,14 +132,14 @@ func TestKebab(t *testing.T) {
 
 	for _, v := range tests {
 		want := v.o
-		got := kace.Kebab(v.i)
+		got := Kebab(v.i)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
 }
 
-func TestKebabUpper(t *testing.T) {
+func TestUnitKebabUpper(t *testing.T) {
 	var tests = []struct {
 		i string
 		o string
@@ -185,39 +161,9 @@ func TestKebabUpper(t *testing.T) {
 
 	for _, v := range tests {
 		want := v.o
-		got := kace.KebabUpper(v.i)
+		got := KebabUpper(v.i)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
-	}
-}
-
-func BenchmarkCamel4(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		_ = kace.Camel("this_is_a_test", true)
-	}
-}
-
-func BenchmarkSnake4(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		_ = kace.Snake("ThisIsATest")
-	}
-}
-
-func BenchmarkSnakeUpper4(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		_ = kace.SnakeUpper("ThisIsATest")
-	}
-}
-
-func BenchmarkKebab4(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		_ = kace.Kebab("ThisIsATest")
-	}
-}
-
-func BenchmarkKebabUpper4(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		_ = kace.KebabUpper("ThisIsATest")
 	}
 }
