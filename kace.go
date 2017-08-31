@@ -238,11 +238,21 @@ func regularizeCI(m map[string]bool) map[string]bool {
 	r := map[string]bool{}
 
 	for k := range m {
+		fn := func(r rune) rune {
+			if !unicode.IsLetter(r) && !unicode.IsNumber(r) {
+				return -1
+			}
+			return r
+		}
+
+		k = strings.Map(fn, k)
+		k = strings.ToUpper(k)
+
 		if k == "" {
 			continue
 		}
 
-		r[strings.ToUpper(k)] = true
+		r[k] = true
 	}
 
 	return r

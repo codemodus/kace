@@ -222,14 +222,18 @@ func TestUnitRegularizeCI(t *testing.T) {
 	}{
 		{
 			map[string]bool{
-				"nsa": true,
-				"CIA": false,
-				"fbI": true,
+				"nsa":     true,
+				"CIA":     false,
+				"fbI":     true,
+				" ym ca ": false,
+				"  ":      true,
+				"":        false,
 			},
 			map[string]bool{
-				"NSA": true,
-				"CIA": true,
-				"FBI": true,
+				"NSA":  true,
+				"CIA":  true,
+				"FBI":  true,
+				"YMCA": true,
 			},
 		},
 		{ciMap, ciMap},
@@ -243,4 +247,26 @@ func TestUnitRegularizeCI(t *testing.T) {
 		}
 	}
 
+}
+
+func TestUnitNew(t *testing.T) {
+	k, err := New(ciMap)
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	if k == nil {
+		t.Errorf("got nil, want *Kace")
+	}
+
+	k, err = New(nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	want := "TestSql"
+	got := k.Pascal(want)
+	if got != want {
+		t.Errorf("got %v, want %v", got, want)
+	}
 }
