@@ -3,6 +3,7 @@
 package kace
 
 import (
+	"strings"
 	"unicode"
 )
 
@@ -17,29 +18,100 @@ var (
 
 // Camel returns a camelCased string.
 func Camel(s string) string {
-	return camel(s, false)
+	return camelCase(ciTrie, s, false)
 }
 
 // Pascal returns a PascalCased string.
 func Pascal(s string) string {
-	return camel(s, true)
+	return camelCase(ciTrie, s, true)
 }
 
-func camel(s string, ucFirst bool) string {
-	tmpBuf := make([]rune, 0, ciTrie.maxDepth)
+// Kebab returns a kebab-cased string with all lowercase letters.
+func Kebab(s string) string {
+	return delimitedCase(ciTrie, s, kebabDelim, false)
+}
+
+// KebabUpper returns a KEBAB-CASED string with all upper case letters.
+func KebabUpper(s string) string {
+	return delimitedCase(ciTrie, s, kebabDelim, true)
+}
+
+// Snake returns a snake_cased string with all lowercase letters.
+func Snake(s string) string {
+	return delimitedCase(ciTrie, s, snakeDelim, false)
+}
+
+// SnakeUpper returns a SNAKE_CASED string with all upper case letters.
+func SnakeUpper(s string) string {
+	return delimitedCase(ciTrie, s, snakeDelim, true)
+}
+
+// Kace ...
+type Kace struct {
+	t *trie
+}
+
+// New ...
+func New(initialisms map[string]bool) (*Kace, error) {
+	ci := initialisms
+	if ci == nil {
+		ci = map[string]bool{}
+	}
+
+	ci = regularizeCI(ci)
+
+	k := &Kace{
+		t: newTrie(ci),
+	}
+
+	return k, nil
+}
+
+// Camel returns a camelCased string.
+func (k *Kace) Camel(s string) string {
+	return camelCase(k.t, s, false)
+}
+
+// Pascal returns a PascalCased string.
+func (k *Kace) Pascal(s string) string {
+	return camelCase(k.t, s, true)
+}
+
+// Snake returns a snake_cased string with all lowercase letters.
+func (k *Kace) Snake(s string) string {
+	return delimitedCase(k.t, s, snakeDelim, false)
+}
+
+// SnakeUpper returns a SNAKE_CASED string with all upper case letters.
+func (k *Kace) SnakeUpper(s string) string {
+	return delimitedCase(k.t, s, snakeDelim, true)
+}
+
+// Kebab returns a kebab-cased string with all lowercase letters.
+func (k *Kace) Kebab(s string) string {
+	return delimitedCase(k.t, s, kebabDelim, false)
+}
+
+// KebabUpper returns a KEBAB-CASED string with all upper case letters.
+func (k *Kace) KebabUpper(s string) string {
+	return delimitedCase(k.t, s, kebabDelim, true)
+}
+
+func camelCase(t *trie, s string, ucFirst bool) string {
+	tmpBuf := make([]rune, 0, t.maxDepth)
 	buf := make([]rune, 0, len(s))
 
 	for i := 0; i < len(s); i++ {
 		tmpBuf = tmpBuf[:0]
 		if unicode.IsLetter(rune(s[i])) {
 			if i == 0 || !unicode.IsLetter(rune(s[i-1])) {
-				for n := i; n < len(s) && n-i < ciTrie.maxDepth; n++ {
+				for n := i; n < len(s) && n-i < t.maxDepth; n++ {
 					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(s[n])))
 					if n < len(s)-1 && !unicode.IsLetter(rune(s[n+1])) && !unicode.IsDigit(rune(s[n+1])) {
 						break
 					}
 				}
-				if ((i == 0 && ucFirst) || i > 0) && ciTrie.find(tmpBuf) {
+				if ((i == 0 && ucFirst) || i > 0) && t.find(tmpBuf) {
 					buf = append(buf, tmpBuf...)
 					i += len(tmpBuf)
 					continue
@@ -62,27 +134,7 @@ func camel(s string, ucFirst bool) string {
 	return string(buf)
 }
 
-// Snake returns a snake_cased string with all lowercase letters.
-func Snake(s string) string {
-	return delimitedCase(s, snakeDelim, false)
-}
-
-// SnakeUpper returns a SNAKE_CASED string with all upper case letters.
-func SnakeUpper(s string) string {
-	return delimitedCase(s, snakeDelim, true)
-}
-
-// Kebab returns a kebab-cased string with all lowercase letters.
-func Kebab(s string) string {
-	return delimitedCase(s, kebabDelim, false)
-}
-
-// KebabUpper returns a KEBAB-CASED string with all upper case letters.
-func KebabUpper(s string) string {
-	return delimitedCase(s, kebabDelim, true)
-}
-
-func delimitedCase(s string, delim rune, upper bool) string {
+func delimitedCase(t *trie, s string, delim rune, upper bool) string {
 	buf := make([]rune, 0, len(s)*2)
 
 	for i := len(s); i > 0; i-- {
@@ -178,3 +230,17 @@ var (
 		"XSS":   true,
 	}
 )
+
+func regularizeCI(m map[string]bool) map[string]bool {
+	r := map[string]bool{}
+
+	for k := range m {
+		if k == "" {
+			continue
+		}
+
+		r[strings.ToUpper(k)] = true
+	}
+
+	return r
+}

@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestUnitPascal(t *testing.T) {
-	var tests = []struct {
+func TestUnitCamelCase(t *testing.T) {
+	var pascalData = []struct {
 		i string
 		o string
 	}{
@@ -27,17 +27,15 @@ func TestUnitPascal(t *testing.T) {
 		{"ahttp_upper", "AhttpUpper"},
 	}
 
-	for _, v := range tests {
+	for _, v := range pascalData {
 		want := v.o
-		got := Pascal(v.i)
+		got := camelCase(ciTrie, v.i, true)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
-}
 
-func TestUnitCamel(t *testing.T) {
-	var tests = []struct {
+	var camelData = []struct {
 		i string
 		o string
 	}{
@@ -56,17 +54,17 @@ func TestUnitCamel(t *testing.T) {
 		{"ahttp_lower", "ahttpLower"},
 	}
 
-	for _, v := range tests {
+	for _, v := range camelData {
 		want := v.o
-		got := Camel(v.i)
+		got := camelCase(ciTrie, v.i, false)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
 }
 
-func TestUnitSnake(t *testing.T) {
-	var tests = []struct {
+func TestDelimitedCase(t *testing.T) {
+	var snakeData = []struct {
 		i string
 		o string
 	}{
@@ -87,17 +85,15 @@ func TestUnitSnake(t *testing.T) {
 		{"WillidMessItUp", "willid_mess_it_up"},
 	}
 
-	for _, v := range tests {
+	for _, v := range snakeData {
 		want := v.o
-		got := Snake(v.i)
+		got := delimitedCase(ciTrie, v.i, snakeDelim, false)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
-}
 
-func TestUnitSnakeUpper(t *testing.T) {
-	var tests = []struct {
+	var snakeUpperData = []struct {
 		i string
 		o string
 	}{
@@ -116,17 +112,15 @@ func TestUnitSnakeUpper(t *testing.T) {
 		{"WillidMessItUp", "WILLID_MESS_IT_UP"},
 	}
 
-	for _, v := range tests {
+	for _, v := range snakeUpperData {
 		want := v.o
-		got := SnakeUpper(v.i)
+		got := delimitedCase(ciTrie, v.i, snakeDelim, true)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
-}
 
-func TestUnitKebab(t *testing.T) {
-	var tests = []struct {
+	var kebabData = []struct {
 		i string
 		o string
 	}{
@@ -145,17 +139,15 @@ func TestUnitKebab(t *testing.T) {
 		{"WillidMessItUp", "willid-mess-it-up"},
 	}
 
-	for _, v := range tests {
+	for _, v := range kebabData {
 		want := v.o
-		got := Kebab(v.i)
+		got := delimitedCase(ciTrie, v.i, kebabDelim, false)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
-}
 
-func TestUnitKebabUpper(t *testing.T) {
-	var tests = []struct {
+	var kebabUpperData = []struct {
 		i string
 		o string
 	}{
@@ -174,9 +166,9 @@ func TestUnitKebabUpper(t *testing.T) {
 		{"WillidMessItUp", "WILLID-MESS-IT-UP"},
 	}
 
-	for _, v := range tests {
+	for _, v := range kebabUpperData {
 		want := v.o
-		got := KebabUpper(v.i)
+		got := delimitedCase(ciTrie, v.i, kebabDelim, true)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}
