@@ -39,6 +39,8 @@ func Camel(s string, ucFirst bool) string {
 
 			if i == 0 && ucFirst || i > 0 && !unicode.IsLetter(rune(s[i-1])) {
 				buf = append(buf, unicode.ToUpper(rune(s[i])))
+			} else if i == 0 && !ucFirst {
+				buf = append(buf, unicode.ToLower(rune(s[i])))
 			} else {
 				buf = append(buf, rune(s[i]))
 			}

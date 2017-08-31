@@ -34,8 +34,8 @@ func TestCamel(t *testing.T) {
 		ucf bool
 		o   string
 	}{
-		{"this is a test", false, "thisIsATest"},
-		{"this is a test", true, "ThisIsATest"},
+		{"This is a test", false, "thisIsATest"},
+		{"This is a test", true, "ThisIsATest"},
 		{"this is a test3", true, "ThisIsATest3"},
 		{"this is 4 test", true, "ThisIs4Test"},
 		{"5this is a test", true, "5ThisIsATest"},
@@ -45,7 +45,7 @@ func TestCamel(t *testing.T) {
 		{"This is a test.", true, "ThisIsATest"},
 		{"this.is.a.Test", false, "thisIsATest"},
 		{"This.is.a.Test", true, "ThisIsATest"},
-		{"AndThisToo", false, "AndThisToo"},
+		{"AndThisToo", false, "andThisToo"},
 		{"andThisToo", false, "andThisToo"},
 		{"andThisToo", true, "AndThisToo"},
 		{"AndThisToo", true, "AndThisToo"},
