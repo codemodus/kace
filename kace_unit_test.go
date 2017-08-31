@@ -1,6 +1,7 @@
 package kace
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -173,4 +174,73 @@ func TestDelimitedCase(t *testing.T) {
 			t.Errorf("got %v, want %v", got, want)
 		}
 	}
+}
+
+func TestUnitAppendCased(t *testing.T) {
+	data := []struct {
+		in  []rune
+		up  bool
+		apd rune
+		out string
+	}{
+		{[]rune("tes"), true, 't', "tesT"},
+		{[]rune("te541s"), false, 't', "te541st"},
+	}
+
+	for _, v := range data {
+		want := v.out
+		got := string(appendCased(v.in, v.up, v.apd))
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+}
+
+func TestUnitReverse(t *testing.T) {
+	data := []struct {
+		bef []rune
+		aft string
+	}{
+		{[]rune("test"), "tset"},
+		{[]rune("te541st"), "ts145et"},
+	}
+
+	for _, v := range data {
+		want := v.aft
+		reverse(v.bef)
+		got := string(v.bef)
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+}
+
+func TestRegularizeCI(t *testing.T) {
+	data := []struct {
+		in  map[string]bool
+		out map[string]bool
+	}{
+		{
+			map[string]bool{
+				"nsa": true,
+				"CIA": false,
+				"fbI": true,
+			},
+			map[string]bool{
+				"NSA": true,
+				"CIA": true,
+				"FBI": true,
+			},
+		},
+		{ciMap, ciMap},
+	}
+
+	for _, v := range data {
+		want := v.out
+		got := regularizeCI(v.in)
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+
 }
