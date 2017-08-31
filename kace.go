@@ -15,8 +15,17 @@ var (
 	ciTrie = newTrie(ciMap)
 )
 
-// Camel returns a camel cased string.
-func Camel(s string, ucFirst bool) string {
+// Camel returns a camelCased string.
+func Camel(s string) string {
+	return camel(s, false)
+}
+
+// Pascal returns a PascalCased string.
+func Pascal(s string) string {
+	return camel(s, true)
+}
+
+func camel(s string, ucFirst bool) string {
 	tmpBuf := make([]rune, 0, ciTrie.maxDepth)
 	buf := make([]rune, 0, len(s))
 
@@ -53,27 +62,26 @@ func Camel(s string, ucFirst bool) string {
 	return string(buf)
 }
 
-// Snake returns a snake cased string.
+// Snake returns a snake_cased string with all lowercase letters.
 func Snake(s string) string {
 	return delimitedCase(s, snakeDelim, false)
 }
 
-// SnakeUpper returns a snake cased string with all upper case letters.
+// SnakeUpper returns a SNAKE_CASED string with all upper case letters.
 func SnakeUpper(s string) string {
 	return delimitedCase(s, snakeDelim, true)
 }
 
-// Kebab returns a kebab cased string.
+// Kebab returns a kebab-cased string with all lowercase letters.
 func Kebab(s string) string {
 	return delimitedCase(s, kebabDelim, false)
 }
 
-// KebabUpper returns a kebab cased string with all upper case letters.
+// KebabUpper returns a KEBAB-CASED string with all upper case letters.
 func KebabUpper(s string) string {
 	return delimitedCase(s, kebabDelim, true)
 }
 
-// Snake returns a snake cased string.
 func delimitedCase(s string, delim rune, upper bool) string {
 	buf := make([]rune, 0, len(s)*2)
 

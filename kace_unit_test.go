@@ -4,46 +4,61 @@ import (
 	"testing"
 )
 
-func TestUnitCamel(t *testing.T) {
+func TestUnitPascal(t *testing.T) {
 	var tests = []struct {
-		i   string
-		ucf bool
-		o   string
+		i string
+		o string
 	}{
-		{"This is a test", false, "thisIsATest"},
-		{"This is a test", true, "ThisIsATest"},
-		{"this is a test3", true, "ThisIsATest3"},
-		{"this is 4 test", true, "ThisIs4Test"},
-		{"5this is a test", true, "5ThisIsATest"},
-		{"this_is_a_test", false, "thisIsATest"},
-		{"this_is_a_test", true, "ThisIsATest"},
-		{"this is a test.", false, "thisIsATest"},
-		{"This is a test.", true, "ThisIsATest"},
-		{"this.is.a.Test", false, "thisIsATest"},
-		{"This.is.a.Test", true, "ThisIsATest"},
-		{"AndThisToo", false, "andThisToo"},
-		{"andThisToo", false, "andThisToo"},
-		{"andThisToo", true, "AndThisToo"},
-		{"AndThisToo", true, "AndThisToo"},
-		{"this http conn", false, "thisHTTPConn"},
-		{"this http conn", true, "ThisHTTPConn"},
-		{"this_https_conn", false, "thisHTTPSConn"},
-		{"this_http_scan", false, "thisHTTPScan"},
-		{"this_https_conn", true, "ThisHTTPSConn"},
-		{"this_http_scan", true, "ThisHTTPScan"},
-		{"willid mess it up", false, "willidMessItUp"},
-		{"willid mess it up", true, "WillidMessItUp"},
-		{"willid_mess_it_up", false, "willidMessItUp"},
-		{"willid_mess_it_up", true, "WillidMessItUp"},
-		{"http_first_lower", false, "httpFirstLower"},
-		{"http_first_upper", true, "HTTPFirstUpper"},
-		{"ahttp_lower", false, "ahttpLower"},
-		{"ahttp_upper", true, "AhttpUpper"},
+		{"This is a test", "ThisIsATest"},
+		{"this is a test", "ThisIsATest"},
+		{"this is 4 test", "ThisIs4Test"},
+		{"5this is a test", "5ThisIsATest"},
+		{"this_is_a_test", "ThisIsATest"},
+		{"This is a test.", "ThisIsATest"},
+		{"This.is.a.Test", "ThisIsATest"},
+		{"andThisToo", "AndThisToo"},
+		{"AndThisToo", "AndThisToo"},
+		{"this http conn", "ThisHTTPConn"},
+		{"this_https_conn", "ThisHTTPSConn"},
+		{"this_http_scan", "ThisHTTPScan"},
+		{"willid mess it up", "WillidMessItUp"},
+		{"willid_mess_it_up", "WillidMessItUp"},
+		{"http_first_upper", "HTTPFirstUpper"},
+		{"ahttp_upper", "AhttpUpper"},
 	}
 
 	for _, v := range tests {
 		want := v.o
-		got := Camel(v.i, v.ucf)
+		got := Pascal(v.i)
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+}
+
+func TestUnitCamel(t *testing.T) {
+	var tests = []struct {
+		i string
+		o string
+	}{
+		{"this is a test", "thisIsATest"},
+		{"this_is_a_test", "thisIsATest"},
+		{"this is a test.", "thisIsATest"},
+		{"this.is.a.Test", "thisIsATest"},
+		{"AndThisToo", "andThisToo"},
+		{"andThisToo", "andThisToo"},
+		{"this http conn", "thisHTTPConn"},
+		{"this_https_conn", "thisHTTPSConn"},
+		{"this_http_scan", "thisHTTPScan"},
+		{"willid mess it up", "willidMessItUp"},
+		{"willid_mess_it_up", "willidMessItUp"},
+		{"http_first_lower", "httpFirstLower"},
+		{"ahttp_lower", "ahttpLower"},
+	}
+
+	for _, v := range tests {
+		want := v.o
+		got := Camel(v.i)
 		if got != want {
 			t.Errorf("got %v, want %v", got, want)
 		}

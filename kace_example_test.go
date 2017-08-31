@@ -9,8 +9,8 @@ import (
 func Example() {
 	s := "this is a test."
 
-	fmt.Println(kace.Camel(s, false))
-	fmt.Println(kace.Camel(s, true))
+	fmt.Println(kace.Camel(s))
+	fmt.Println(kace.Pascal(s))
 
 	fmt.Println(kace.Snake(s))
 	fmt.Println(kace.SnakeUpper(s))
