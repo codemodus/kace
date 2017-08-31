@@ -46,12 +46,15 @@ func SnakeUpper(s string) string {
 	return delimitedCase(ciTrie, s, snakeDelim, true)
 }
 
-// Kace ...
+// Kace provides common case conversion methods which take into
+// consideration common initialisms set by the user.
 type Kace struct {
 	t *trie
 }
 
-// New ...
+// New returns a pointer to an instance of kace loaded with a common
+// initialsms trie based on the provided map. Before conversion to a
+// trie, the provided map keys are all upper cased.
 func New(initialisms map[string]bool) (*Kace, error) {
 	ci := initialisms
 	if ci == nil {
