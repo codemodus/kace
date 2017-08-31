@@ -215,7 +215,7 @@ func TestUnitReverse(t *testing.T) {
 	}
 }
 
-func TestRegularizeCI(t *testing.T) {
+func TestUnitRegularizeCI(t *testing.T) {
 	data := []struct {
 		in  map[string]bool
 		out map[string]bool
