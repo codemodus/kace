@@ -75,7 +75,7 @@ func New(initialisms map[string]bool) (*Kace, error) {
 
 	t, err := ktrie.NewKTrie(ci)
 	if err != nil {
-		return nil, fmt.Errorf("kace: cannot create new kace: %s", err)
+		return nil, fmt.Errorf("kace: cannot create trie: %s", err)
 	}
 
 	k := &Kace{
