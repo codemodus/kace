@@ -64,7 +64,7 @@ func TestUnitCamelCase(t *testing.T) {
 	}
 }
 
-func TestDelimitedCase(t *testing.T) {
+func TestUnitDelimitedCase(t *testing.T) {
 	var snakeData = []struct {
 		i string
 		o string
