@@ -3,8 +3,11 @@
 package kace
 
 import (
+	"fmt"
 	"strings"
 	"unicode"
+
+	"github.com/codemodus/kace/ktrie"
 )
 
 const (
@@ -13,8 +16,15 @@ const (
 )
 
 var (
-	ciTrie = newTrie(ciMap)
+	ciTrie *ktrie.KTrie
 )
+
+func init() {
+	var err error
+	if ciTrie, err = ktrie.NewKTrie(ciMap); err != nil {
+		panic(err)
+	}
+}
 
 // Camel returns a camelCased string.
 func Camel(s string) string {
@@ -49,7 +59,7 @@ func SnakeUpper(s string) string {
 // Kace provides common case conversion methods which take into
 // consideration common initialisms set by the user.
 type Kace struct {
-	t *trie
+	t *ktrie.KTrie
 }
 
 // New returns a pointer to an instance of kace loaded with a common
@@ -61,10 +71,15 @@ func New(initialisms map[string]bool) (*Kace, error) {
 		ci = map[string]bool{}
 	}
 
-	ci = regularizeCI(ci)
+	ci = sanitizeCI(ci)
+
+	t, err := ktrie.NewKTrie(ci)
+	if err != nil {
+		return nil, fmt.Errorf("kace: cannot create new kace: %s", err)
+	}
 
 	k := &Kace{
-		t: newTrie(ci),
+		t: t,
 	}
 
 	return k, nil
@@ -100,21 +115,21 @@ func (k *Kace) KebabUpper(s string) string {
 	return delimitedCase(k.t, s, kebabDelim, true)
 }
 
-func camelCase(t *trie, s string, ucFirst bool) string {
-	tmpBuf := make([]rune, 0, t.maxDepth)
+func camelCase(t *ktrie.KTrie, s string, ucFirst bool) string {
+	tmpBuf := make([]rune, 0, t.MaxDepth())
 	buf := make([]rune, 0, len(s))
 
 	for i := 0; i < len(s); i++ {
 		tmpBuf = tmpBuf[:0]
 		if unicode.IsLetter(rune(s[i])) {
 			if i == 0 || !unicode.IsLetter(rune(s[i-1])) {
-				for n := i; n < len(s) && n-i < t.maxDepth; n++ {
+				for n := i; n < len(s) && n-i < t.MaxDepth(); n++ {
 					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(s[n])))
 					if n < len(s)-1 && !unicode.IsLetter(rune(s[n+1])) && !unicode.IsDigit(rune(s[n+1])) {
 						break
 					}
 				}
-				if ((i == 0 && ucFirst) || i > 0) && t.find(tmpBuf) {
+				if ((i == 0 && ucFirst) || i > 0) && t.Find(tmpBuf) {
 					buf = append(buf, tmpBuf...)
 					i += len(tmpBuf)
 					continue
@@ -137,7 +152,7 @@ func camelCase(t *trie, s string, ucFirst bool) string {
 	return string(buf)
 }
 
-func delimitedCase(t *trie, s string, delim rune, upper bool) string {
+func delimitedCase(t *ktrie.KTrie, s string, delim rune, upper bool) string {
 	buf := make([]rune, 0, len(s)*2)
 
 	for i := len(s); i > 0; i-- {
@@ -234,7 +249,7 @@ var (
 	}
 )
 
-func regularizeCI(m map[string]bool) map[string]bool {
+func sanitizeCI(m map[string]bool) map[string]bool {
 	r := map[string]bool{}
 
 	for k := range m {

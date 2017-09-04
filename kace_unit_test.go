@@ -215,7 +215,7 @@ func TestUnitReverse(t *testing.T) {
 	}
 }
 
-func TestUnitRegularizeCI(t *testing.T) {
+func TestUnitSanitizeCI(t *testing.T) {
 	data := []struct {
 		in  map[string]bool
 		out map[string]bool
@@ -241,7 +241,7 @@ func TestUnitRegularizeCI(t *testing.T) {
 
 	for _, v := range data {
 		want := v.out
-		got := regularizeCI(v.in)
+		got := sanitizeCI(v.in)
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v, want %v", got, want)
 		}
