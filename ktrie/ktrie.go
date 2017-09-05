@@ -1,5 +1,7 @@
 package ktrie
 
+import "unicode"
+
 // KNode ...
 type KNode struct {
 	val   rune
@@ -18,8 +20,10 @@ func NewKNode(val rune) *KNode {
 // Add ...
 func (n *KNode) Add(rs []rune) {
 	cur := n
+
 	for k, v := range rs {
 		link := cur.linkByVal(v)
+
 		if link == nil {
 			link = NewKNode(v)
 			cur.links = append(cur.links, link)
@@ -36,8 +40,25 @@ func (n *KNode) Add(rs []rune) {
 // Find ...
 func (n *KNode) Find(rs []rune) bool {
 	cur := n
+
 	for _, v := range rs {
 		cur = cur.linkByVal(v)
+
+		if cur == nil {
+			return false
+		}
+	}
+
+	return cur.end
+}
+
+// FindAsUpper ...
+func (n *KNode) FindAsUpper(rs []rune) bool {
+	cur := n
+
+	for _, v := range rs {
+		cur = cur.linkByVal(unicode.ToUpper(v))
+
 		if cur == nil {
 			return false
 		}
@@ -58,25 +79,36 @@ func (n *KNode) linkByVal(val rune) *KNode {
 
 // KTrie ...
 type KTrie struct {
-	maxDepth int
 	*KNode
+
+	maxDepth int
+	minDepth int
 }
 
 // NewKTrie ...
 func NewKTrie(data map[string]bool) (*KTrie, error) {
-	maxDepth := 0
 	n := NewKNode(0)
 
-	for k := range data {
-		n.Add([]rune(k))
+	maxDepth := 0
+	minDepth := 9001
 
-		if len(k) > maxDepth {
-			maxDepth = len(k)
+	for k := range data {
+		rs := []rune(k)
+		l := len(rs)
+
+		n.Add(rs)
+
+		if l > maxDepth {
+			maxDepth = l
+		}
+		if l < minDepth {
+			minDepth = l
 		}
 	}
 
 	t := &KTrie{
 		maxDepth: maxDepth,
+		minDepth: minDepth,
 		KNode:    n,
 	}
 
@@ -86,4 +118,9 @@ func NewKTrie(data map[string]bool) (*KTrie, error) {
 // MaxDepth ...
 func (t *KTrie) MaxDepth() int {
 	return t.maxDepth
+}
+
+// MinDepth ...
+func (t *KTrie) MinDepth() int {
+	return t.minDepth
 }
