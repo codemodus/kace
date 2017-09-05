@@ -38,22 +38,22 @@ func Pascal(s string) string {
 
 // Kebab returns a kebab-cased string with all lowercase letters.
 func Kebab(s string) string {
-	return delimitedCase(ciTrie, s, kebabDelim, false)
+	return delimitedCase(s, kebabDelim, false)
 }
 
 // KebabUpper returns a KEBAB-CASED string with all upper case letters.
 func KebabUpper(s string) string {
-	return delimitedCase(ciTrie, s, kebabDelim, true)
+	return delimitedCase(s, kebabDelim, true)
 }
 
 // Snake returns a snake_cased string with all lowercase letters.
 func Snake(s string) string {
-	return delimitedCase(ciTrie, s, snakeDelim, false)
+	return delimitedCase(s, snakeDelim, false)
 }
 
 // SnakeUpper returns a SNAKE_CASED string with all upper case letters.
 func SnakeUpper(s string) string {
-	return delimitedCase(ciTrie, s, snakeDelim, true)
+	return delimitedCase(s, snakeDelim, true)
 }
 
 // Kace provides common case conversion methods which take into
@@ -97,22 +97,22 @@ func (k *Kace) Pascal(s string) string {
 
 // Snake returns a snake_cased string with all lowercase letters.
 func (k *Kace) Snake(s string) string {
-	return delimitedCase(k.t, s, snakeDelim, false)
+	return delimitedCase(s, snakeDelim, false)
 }
 
 // SnakeUpper returns a SNAKE_CASED string with all upper case letters.
 func (k *Kace) SnakeUpper(s string) string {
-	return delimitedCase(k.t, s, snakeDelim, true)
+	return delimitedCase(s, snakeDelim, true)
 }
 
 // Kebab returns a kebab-cased string with all lowercase letters.
 func (k *Kace) Kebab(s string) string {
-	return delimitedCase(k.t, s, kebabDelim, false)
+	return delimitedCase(s, kebabDelim, false)
 }
 
 // KebabUpper returns a KEBAB-CASED string with all upper case letters.
 func (k *Kace) KebabUpper(s string) string {
-	return delimitedCase(k.t, s, kebabDelim, true)
+	return delimitedCase(s, kebabDelim, true)
 }
 
 func camelCase(t *ktrie.KTrie, s string, ucFirst bool) string {
@@ -210,7 +210,7 @@ func isToUpperInCamel(prev, curr rune, ucFirst bool) bool {
 	return false
 }
 
-func delimitedCase(t *ktrie.KTrie, s string, delim rune, upper bool) string {
+func delimitedCase(s string, delim rune, upper bool) string {
 	buf := make([]rune, 0, len(s)*2)
 
 	for i := len(s); i > 0; i-- {

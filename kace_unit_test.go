@@ -90,7 +90,7 @@ func TestUnitDelimitedCase(t *testing.T) {
 
 	for k, v := range snakeData {
 		want := v.o
-		got := delimitedCase(ciTrie, v.i, snakeDelim, false)
+		got := delimitedCase(v.i, snakeDelim, false)
 		if got != want {
 			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
@@ -117,7 +117,7 @@ func TestUnitDelimitedCase(t *testing.T) {
 
 	for k, v := range snakeUpperData {
 		want := v.o
-		got := delimitedCase(ciTrie, v.i, snakeDelim, true)
+		got := delimitedCase(v.i, snakeDelim, true)
 		if got != want {
 			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
@@ -144,7 +144,7 @@ func TestUnitDelimitedCase(t *testing.T) {
 
 	for k, v := range kebabData {
 		want := v.o
-		got := delimitedCase(ciTrie, v.i, kebabDelim, false)
+		got := delimitedCase(v.i, kebabDelim, false)
 		if got != want {
 			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
@@ -171,7 +171,7 @@ func TestUnitDelimitedCase(t *testing.T) {
 
 	for k, v := range kebabUpperData {
 		want := v.o
-		got := delimitedCase(ciTrie, v.i, kebabDelim, true)
+		got := delimitedCase(v.i, kebabDelim, true)
 		if got != want {
 			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
