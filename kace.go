@@ -136,13 +136,23 @@ func camelCase(t *ktrie.KTrie, s string, ucFirst bool) string {
 				}
 			}
 
-			if i == 0 && ucFirst || i > 0 && !unicode.IsLetter(rune(s[i-1])) {
-				buf = append(buf, unicode.ToUpper(rune(s[i])))
-			} else if i == 0 && !ucFirst {
+			if i == 0 {
+				if ucFirst {
+					buf = append(buf, unicode.ToUpper(rune(s[i])))
+					continue
+				}
+
 				buf = append(buf, unicode.ToLower(rune(s[i])))
-			} else {
-				buf = append(buf, rune(s[i]))
+				continue
 			}
+
+			if !unicode.IsLetter(rune(s[i-1])) || (unicode.IsUpper(rune(s[i])) && unicode.IsLower(rune(s[i-1]))) {
+				buf = append(buf, unicode.ToUpper(rune(s[i])))
+				continue
+			}
+
+			buf = append(buf, unicode.ToLower(rune(s[i])))
+			continue
 		}
 
 		if unicode.IsDigit(rune(s[i])) {

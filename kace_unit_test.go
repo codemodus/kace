@@ -26,6 +26,7 @@ func TestUnitCamelCase(t *testing.T) {
 		{"willid_mess_it_up", "WillidMessItUp"},
 		{"http_first_upper", "HTTPFirstUpper"},
 		{"ahttp_upper", "AhttpUpper"},
+		{"THIS_IS_A_TEST", "ThisIsATest"},
 	}
 
 	for _, v := range pascalData {
@@ -53,6 +54,7 @@ func TestUnitCamelCase(t *testing.T) {
 		{"willid_mess_it_up", "willidMessItUp"},
 		{"http_first_lower", "httpFirstLower"},
 		{"ahttp_lower", "ahttpLower"},
+		{"THIS_IS_A_TEST", "thisIsATest"},
 	}
 
 	for _, v := range camelData {
