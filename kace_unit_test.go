@@ -29,11 +29,11 @@ func TestUnitCamelCase(t *testing.T) {
 		{"THIS_IS_A_TEST", "ThisIsATest"},
 	}
 
-	for _, v := range pascalData {
+	for k, v := range pascalData {
 		want := v.o
 		got := camelCase(ciTrie, v.i, true)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
 	}
 
@@ -57,11 +57,11 @@ func TestUnitCamelCase(t *testing.T) {
 		{"THIS_IS_A_TEST", "thisIsATest"},
 	}
 
-	for _, v := range camelData {
+	for k, v := range camelData {
 		want := v.o
 		got := camelCase(ciTrie, v.i, false)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
 	}
 }
@@ -88,11 +88,11 @@ func TestUnitDelimitedCase(t *testing.T) {
 		{"WillidMessItUp", "willid_mess_it_up"},
 	}
 
-	for _, v := range snakeData {
+	for k, v := range snakeData {
 		want := v.o
 		got := delimitedCase(ciTrie, v.i, snakeDelim, false)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
 	}
 
@@ -115,11 +115,11 @@ func TestUnitDelimitedCase(t *testing.T) {
 		{"WillidMessItUp", "WILLID_MESS_IT_UP"},
 	}
 
-	for _, v := range snakeUpperData {
+	for k, v := range snakeUpperData {
 		want := v.o
 		got := delimitedCase(ciTrie, v.i, snakeDelim, true)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
 	}
 
@@ -142,11 +142,11 @@ func TestUnitDelimitedCase(t *testing.T) {
 		{"WillidMessItUp", "willid-mess-it-up"},
 	}
 
-	for _, v := range kebabData {
+	for k, v := range kebabData {
 		want := v.o
 		got := delimitedCase(ciTrie, v.i, kebabDelim, false)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
 	}
 
@@ -169,11 +169,11 @@ func TestUnitDelimitedCase(t *testing.T) {
 		{"WillidMessItUp", "WILLID-MESS-IT-UP"},
 	}
 
-	for _, v := range kebabUpperData {
+	for k, v := range kebabUpperData {
 		want := v.o
 		got := delimitedCase(ciTrie, v.i, kebabDelim, true)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, v.i, got, want)
 		}
 	}
 }
@@ -189,11 +189,11 @@ func TestUnitAppendCased(t *testing.T) {
 		{[]rune("te541s"), false, 't', "te541st"},
 	}
 
-	for _, v := range data {
+	for k, v := range data {
 		want := v.out
 		got := string(appendCased(v.in, v.up, v.apd))
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, string(v.in), got, want)
 		}
 	}
 }
@@ -207,12 +207,13 @@ func TestUnitReverse(t *testing.T) {
 		{[]rune("te541st"), "ts145et"},
 	}
 
-	for _, v := range data {
+	for k, v := range data {
 		want := v.aft
+		bef := string(v.bef)
 		reverse(v.bef)
 		got := string(v.bef)
 		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+			t.Errorf("#%d (%s), got %v, want %v", k, bef, got, want)
 		}
 	}
 }
