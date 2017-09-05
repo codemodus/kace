@@ -116,50 +116,98 @@ func (k *Kace) KebabUpper(s string) string {
 }
 
 func camelCase(t *ktrie.KTrie, s string, ucFirst bool) string {
-	tmpBuf := make([]rune, 0, t.MaxDepth())
-	buf := make([]rune, 0, len(s))
+	rs := []rune(s)
+	d := 0
+	prev := rune(-1)
 
-	for i := 0; i < len(s); i++ {
-		tmpBuf = tmpBuf[:0]
-		if unicode.IsLetter(rune(s[i])) {
-			if i == 0 || !unicode.IsLetter(rune(s[i-1])) {
-				for n := i; n < len(s) && n-i < t.MaxDepth(); n++ {
-					tmpBuf = append(tmpBuf, unicode.ToUpper(rune(s[n])))
-					if n < len(s)-1 && !unicode.IsLetter(rune(s[n+1])) && !unicode.IsDigit(rune(s[n+1])) {
-						break
-					}
-				}
-				if ((i == 0 && ucFirst) || i > 0) && t.Find(tmpBuf) {
-					buf = append(buf, tmpBuf...)
-					i += len(tmpBuf)
-					continue
-				}
-			}
+	for i := 0; i < len(rs); i++ {
+		r := rs[i]
 
-			if i == 0 {
-				if ucFirst {
-					buf = append(buf, unicode.ToUpper(rune(s[i])))
-					continue
-				}
+		if unicode.IsLetter(r) {
+			isToUpper := isToUpperInCamel(prev, r, ucFirst)
 
-				buf = append(buf, unicode.ToLower(rune(s[i])))
+			tprev, skip := updateRunes(rs, i, d, t, isToUpper)
+			if skip > 0 {
+				i += skip
+				prev = tprev
 				continue
 			}
 
-			if !unicode.IsLetter(rune(s[i-1])) || (unicode.IsUpper(rune(s[i])) && unicode.IsLower(rune(s[i-1]))) {
-				buf = append(buf, unicode.ToUpper(rune(s[i])))
-				continue
-			}
-
-			buf = append(buf, unicode.ToLower(rune(s[i])))
+			prev = updateRune(rs, i, d, isToUpper)
 			continue
 		}
 
-		if unicode.IsDigit(rune(s[i])) {
-			buf = append(buf, rune(s[i]))
+		if unicode.IsDigit(r) {
+			prev = updateRune(rs, i, d, false)
+			continue
+		}
+
+		prev = r
+		d++
+	}
+
+	return string(rs[:len(rs)-d])
+}
+
+func updateRune(rs []rune, i, delta int, upper bool) rune {
+	r := rs[i]
+
+	targ := i - delta
+	if targ < 0 || i > len(rs)-1 {
+		panic("this function has been used or designed incorrectly")
+	}
+
+	fn := unicode.ToLower
+	if upper {
+		fn = unicode.ToUpper
+	}
+
+	rs[targ] = fn(r)
+
+	return r
+}
+
+func updateRunes(rs []rune, i, delta int, t *ktrie.KTrie, upper bool) (rune, int) {
+	r := rs[i]
+	ct := 0
+
+	for j := t.MaxDepth(); j >= t.MinDepth(); j-- {
+		if i+j <= len(rs) && t.FindAsUpper(rs[i:i+j]) {
+			r = rs[i+j-1]
+			ct = j - 1
+			break
 		}
 	}
-	return string(buf)
+
+	if ct > 0 {
+		for j := i; j <= i+ct; j++ {
+			targ := j - delta
+			if targ < 0 {
+				panic("this function has been used or designed incorrectly")
+			}
+
+			fn := unicode.ToLower
+			if upper {
+				fn = unicode.ToUpper
+			}
+
+			rs[targ] = fn(rs[j])
+		}
+	}
+
+	return r, ct
+}
+
+func isToUpperInCamel(prev, curr rune, ucFirst bool) bool {
+	if prev == -1 {
+		return ucFirst
+	}
+
+	if !unicode.IsLetter(prev) || unicode.IsUpper(curr) && unicode.IsLower(prev) {
+		return true
+	}
+
+	return false
 }
 
 func delimitedCase(t *ktrie.KTrie, s string, delim rune, upper bool) string {
