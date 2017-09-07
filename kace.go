@@ -171,9 +171,20 @@ func updateRunes(rs []rune, i, delta int, t *ktrie.KTrie, upper bool) (rune, int
 	r := rs[i]
 	ct := 0
 
-	for j := t.MaxDepth(); j >= t.MinDepth(); j-- {
+	min, max := t.MinDepth(), t.MaxDepth()
+	for j := min; j <= max; j++ {
+		if i+j > len(rs)-1 {
+			max = j
+			break
+		}
+
+		if !unicode.IsLetter(rs[i+j]) {
+			max = j
+		}
+	}
+
+	for j := max; j >= min; j-- {
 		if i+j <= len(rs) && t.FindAsUpper(rs[i:i+j]) {
-			r = rs[i+j-1]
 			ct = j - 1
 			break
 		}
@@ -181,17 +192,7 @@ func updateRunes(rs []rune, i, delta int, t *ktrie.KTrie, upper bool) (rune, int
 
 	if ct > 0 {
 		for j := i; j <= i+ct; j++ {
-			targ := j - delta
-			if targ < 0 {
-				panic("this function has been used or designed incorrectly")
-			}
-
-			fn := unicode.ToLower
-			if upper {
-				fn = unicode.ToUpper
-			}
-
-			rs[targ] = fn(rs[j])
+			r = updateRune(rs, j, delta, upper)
 		}
 	}
 
